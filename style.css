@@ -1,12 +1,7 @@
-/* -------------------------
-   Advanced Futuristic UI CSS
-   Replace your old style.css fully with this
-   ------------------------- */
 :root{
   --bg:#04100b;
   --panel:#072118;
   --accent:#00ff9b;
-  --accent-2:#6be7c4;
   --muted:#9bb99f;
   --glass: rgba(255,255,255,0.03);
   --border: rgba(0,255,150,0.06);
