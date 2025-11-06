@@ -1,0 +1,119 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  background: #001b10;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+header {
+  text-align: center;
+  padding: 15px;
+  background: #003520;
+  color: #00ff95;
+  font-weight: 700;
+}
+
+.page {
+  display: none;
+  padding: 20px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+.page.active {
+  display: block;
+}
+
+.wallet {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.mining-center {
+  text-align: center;
+  background: #002c1b;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 0 20px #00ff9555;
+}
+
+button {
+  background: #00ff95;
+  color: #002c1b;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+button:hover {
+  background: #00c77a;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #002015;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+.nav-btn {
+  background: none;
+  color: #999;
+  font-weight: 600;
+}
+.nav-btn.active {
+  color: #00ff95;
+}
+
+/* Pickaxe Smooth Animation */
+.pickaxe-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 20px auto;
+}
+.pickaxe {
+  width: 20px;
+  height: 60px;
+  background: linear-gradient(180deg, #00ff95, #007a4a);
+  border-radius: 10px;
+  position: absolute;
+  left: 40px;
+  top: 10px;
+  transform-origin: bottom center;
+  animation: swing 2s ease-in-out infinite;
+}
+.glow {
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, #00ff9555 0%, transparent 70%);
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes swing {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-25deg); }
+  75% { transform: rotate(25deg); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
