@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TRX Mining Live</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>TRX Mining Live</h1>
+  </header>
+
+  <main id="main-content">
+    <!-- Mine Page -->
+    <section id="mine" class="page active">
+      <div class="wallet">
+        <h2>TRX Balance: <span id="trx-balance">25.00</span></h2>
+        <p>1 TRX = 0.002 USDT</p>
+      </div>
+
+      <div class="mining-center">
+        <h3>⛏️ Mining Center</h3>
+        <div class="pickaxe-container">
+          <div class="pickaxe"></div>
+          <div class="glow"></div>
+        </div>
+        <p id="mine-status">Start mining — wait <b>2 hours</b> — claim 5 TRX.</p>
+        <button id="mine-btn">Start Mining</button>
+      </div>
+    </section>
+
+    <!-- Team Page -->
+    <section id="team" class="page">
+      <h2>Team Center</h2>
+      <p>Your referral and team mining stats will appear here.</p>
+    </section>
+
+    <!-- Me Page -->
+    <section id="me" class="page">
+      <h2>My Wallet</h2>
+      <p>TRX: <b>25.00</b> | USDT: <b>0.050000</b></p>
+      <p>Speed: <b>1.5 TRX/H</b> | Working: <b>24H</b></p>
+      <div class="btn-group">
+        <button>Convert TRX → USDT</button>
+        <button>Withdraw</button>
+        <button>Recharge / VIP</button>
+      </div>
+    </section>
+
+    <!-- VIP Page -->
+    <section id="vip" class="page">
+      <h2>⭐ VIP Center</h2>
+      <p>Activate VIP1: send <b>0.10 USDT</b> then submit proof.</p>
+      <p>Bitget UID: <b>9879164714</b><br>Bybit UID: <b>269645993</b></p>
+
+      <select>
+        <option>Bitget</option>
+        <option>Bybit</option>
+      </select>
+      <input type="text" placeholder="Your exchange UID (sender)">
+      <input type="text" placeholder="Transaction ID / Memo">
+      <input type="file">
+      <button>Submit for Review</button>
+    </section>
+  </main>
+
+  <footer>
+    <nav>
+      <button class="nav-btn active" data-target="mine">Mine</button>
+      <button class="nav-btn" data-target="team">Team</button>
+      <button class="nav-btn" data-target="me">Me</button>
+      <button class="nav-btn" data-target="vip">VIP</button>
+    </nav>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
