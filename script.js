@@ -1,50 +1,102 @@
-// Mining button and progress setup
-const miningButton = document.getElementById("miningButton");
-const miningStatus = document.getElementById("miningStatus");
+// === Navigation ===
+const sections = document.querySelectorAll(".section");
+const navButtons = document.querySelectorAll(".nav-btn");
+
+navButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const target = btn.dataset.target;
+    sections.forEach((sec) => sec.classList.remove("active"));
+    navButtons.forEach((b) => b.classList.remove("active"));
+    document.getElementById(target).classList.add("active");
+    btn.classList.add("active");
+  });
+});
+
+// === Mining Logic with Save ===
+const mineBtn = document.getElementById("mineBtn");
 const progressBar = document.getElementById("progressBar");
 const timerDisplay = document.getElementById("timerDisplay");
+const statusText = document.getElementById("status");
+const trxValue = document.getElementById("trxValue");
 
-let miningActive = false;
-let totalTime = 2 * 60 * 60; // 2 hours in seconds
-let remainingTime = totalTime;
+let mining = false;
+let timeLeft = 0;
 let timer;
 
-// Convert seconds to HH:MM:SS format
-function formatTime(seconds) {
-  const h = String(Math.floor(seconds / 3600)).padStart(2, "0");
-  const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
-  const s = String(seconds % 60).padStart(2, "0");
-  return `${h}:${m}:${s}`;
+const savedEnd = localStorage.getItem("miningEnd");
+
+if (savedEnd && Date.now() < parseInt(savedEnd)) {
+  startMining(true);
+} else {
+  resetMining();
 }
 
-// Update timer + progress bar
-function updateMiningProgress() {
-  if (remainingTime > 0) {
-    remainingTime--;
-    const progressPercent = ((totalTime - remainingTime) / totalTime) * 100;
-    progressBar.style.width = `${progressPercent}%`;
-    timerDisplay.textContent = `Time left: ${formatTime(remainingTime)}`;
-  } else {
-    clearInterval(timer);
-    miningActive = false;
-    miningButton.textContent = "Claim 5 TRX";
-    miningStatus.textContent = "✅ Mining complete — Claim your reward!";
-  }
-}
-
-// Mining button click
-miningButton.addEventListener("click", () => {
-  if (!miningActive) {
-    miningActive = true;
-    remainingTime = totalTime;
-    progressBar.style.width = "0%";
-    miningButton.textContent = "Mining...";
-    miningStatus.textContent = "Mining started — come back after 2 hours to claim.";
-    timerDisplay.textContent = `Time left: ${formatTime(remainingTime)}`;
-    timer = setInterval(updateMiningProgress, 1000);
-  } else if (remainingTime <= 0) {
-    alert("🎉 You claimed 5 TRX!");
-    miningButton.textContent = "Start Mining Again";
-    miningStatus.textContent = "Mining reset — start again anytime.";
+mineBtn.addEventListener("click", () => {
+  if (!mining) {
+    const end = Date.now() + 2 * 60 * 60 * 1000; // 2h
+    localStorage.setItem("miningEnd", end);
+    startMining();
+  } else if (timeLeft <= 0) {
+    claimReward();
   }
 });
+
+function startMining(resume = false) {
+  mining = true;
+  mineBtn.disabled = true;
+  mineBtn.innerText = "Mining...";
+  statusText.innerText = "Mining in progress ⛏️";
+
+  timer = setInterval(() => {
+    const end = parseInt(localStorage.getItem("miningEnd"));
+    timeLeft = Math.floor((end - Date.now()) / 1000);
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      finishMining();
+    } else {
+      updateDisplay();
+    }
+  }, 1000);
+}
+
+function updateDisplay() {
+  const hrs = Math.floor(timeLeft / 3600);
+  const mins = Math.floor((timeLeft % 3600) / 60);
+  const secs = timeLeft % 60;
+  timerDisplay.innerText = `Time left: ${hrs.toString().padStart(2, "0")}:${mins
+    .toString()
+    .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+
+  const end = parseInt(localStorage.getItem("miningEnd"));
+  const total = 2 * 60 * 60;
+  const passed = total - timeLeft;
+  const progress = Math.min((passed / total) * 100, 100);
+  progressBar.style.width = `${progress}%`;
+}
+
+function finishMining() {
+  mining = false;
+  mineBtn.disabled = false;
+  mineBtn.innerText = "Claim 5 TRX";
+  statusText.innerText = "Mining complete! Click to claim reward.";
+  progressBar.style.width = "100%";
+  localStorage.removeItem("miningEnd");
+}
+
+function claimReward() {
+  let balance = parseFloat(trxValue.innerText);
+  balance += 5;
+  trxValue.innerText = balance.toFixed(2) + " TRX";
+  resetMining();
+}
+
+function resetMining() {
+  mining = false;
+  timeLeft = 0;
+  mineBtn.disabled = false;
+  mineBtn.innerText = "Start Mining";
+  progressBar.style.width = "0%";
+  timerDisplay.innerText = "Time left: 02:00:00";
+  statusText.innerText = "Start mining — wait 2 hours — claim 5 TRX.";
+}
