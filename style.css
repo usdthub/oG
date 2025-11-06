@@ -31,6 +31,7 @@ html,body{height:100%;margin:0;font-family:var(--font);background:radial-gradien
 .muted{color:var(--muted)}
 .small{font-size:13px}
 
+/* Mining visual */
 .mine-area{display:flex;gap:18px;align-items:flex-start}
 .mine-left{width:320px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .coin-visual{width:240px;height:240px;position:relative;display:flex;align-items:center;justify-content:center}
