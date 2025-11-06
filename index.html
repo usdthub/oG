@@ -23,7 +23,6 @@
       <div class="mining-box">
         <h3>⛏️ Mining Center</h3>
         <div id="timerDisplay" class="timer">Time left: 02:00:00</div>
-
         <div class="progress-container">
           <div id="progressBar" class="progress-bar"></div>
         </div>
@@ -40,19 +39,60 @@
     <!-- TEAM -->
     <section id="team" class="section">
       <h3>👥 Your Team</h3>
-      <p>Invite friends to earn more rewards!</p>
+      <div class="card">
+        <p>Invite friends to earn more rewards!</p>
+        <p>Your total referrals: <b>0</b></p>
+        <button class="mine-btn small">Invite Now</button>
+      </div>
     </section>
 
     <!-- ME -->
     <section id="me" class="section">
-      <h3>👤 Profile</h3>
-      <p>Manage your account and check mining history.</p>
+      <h3>👤 My Account</h3>
+      <div class="card">
+        <p><b>Wallet Address:</b></p>
+        <input type="text" value="TV1234...abcd" readonly>
+        <button class="mine-btn small">Copy Address</button>
+      </div>
+
+      <div class="card">
+        <h4>Withdraw TRX</h4>
+        <input type="number" placeholder="Enter amount">
+        <button class="mine-btn small">Withdraw</button>
+      </div>
+
+      <div class="card">
+        <h4>Invite Link</h4>
+        <input type="text" value="https://trxmine.com/invite/abcd1234" readonly>
+        <button class="mine-btn small">Copy Link</button>
+      </div>
+
+      <div class="card">
+        <h4>Mining History</h4>
+        <ul id="historyList">
+          <li>+5 TRX — 06 Nov 2025</li>
+        </ul>
+      </div>
     </section>
 
     <!-- VIP -->
     <section id="vip" class="section">
       <h3>💰 VIP Access</h3>
-      <p>Upgrade to increase mining speed and rewards.</p>
+      <div class="card">
+        <p>Upgrade your mining level to earn more TRX per cycle.</p>
+        <div class="vip-plan">
+          <h4>VIP 1</h4>
+          <p>Cost: 100 TRX</p>
+          <p>Reward: +10 TRX per 2h</p>
+          <button class="mine-btn small">Buy Now</button>
+        </div>
+        <div class="vip-plan">
+          <h4>VIP 2</h4>
+          <p>Cost: 250 TRX</p>
+          <p>Reward: +25 TRX per 2h</p>
+          <button class="mine-btn small">Buy Now</button>
+        </div>
+      </div>
     </section>
   </main>
 
