@@ -1,107 +1,173 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
   <title>TRX Mining Live</title>
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="header">
-    <h1>💎 TRX Mining Live</h1>
-    <span class="guest-level">Guest • Level 0</span>
-  </header>
-
-  <main>
-    <!-- MINE -->
-    <section id="mine" class="section active">
-      <div class="trx-box">
-        <h2>TRX Balance</h2>
-        <p id="trxValue" class="trx-value">25.00 TRX</p>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo-circle">TRX</div>
+        <div class="brand-text">TRX Mining Live</div>
       </div>
+      <div id="profileLabel" class="profile">Guest • Level 0</div>
+    </header>
 
-      <div class="mining-box">
-        <h3>⛏️ Mining Center</h3>
-        <div id="timerDisplay" class="timer">Time left: 02:00:00</div>
-        <div class="progress-container">
-          <div id="progressBar" class="progress-bar"></div>
+    <main class="content">
+      <!-- MINE -->
+      <section id="page-mine" class="page active">
+        <div class="card">
+          <div class="balance-row">
+            <div>
+              <div class="coin-label">TRX</div>
+              <div class="coin-amount" id="trxAmount">0.00 TRX</div>
+              <div class="small muted" id="priceLabel">1 TRX = 0.002 USDT</div>
+            </div>
+            <div class="right-status">
+              <div class="progress-bar"><div id="progressInner"></div></div>
+              <div id="progressTimer" class="progress-timer">Not started</div>
+            </div>
+          </div>
+
+          <div class="mine-card">
+            <h3>⛏️ Mining Center</h3>
+            <p class="muted">Start mining — wait <strong id="cycleLabel">2 hours</strong> — claim <strong id="rewardLabel">5 TRX</strong>.</p>
+
+            <div class="mine-controls">
+              <div id="mineStatus" class="mine-status">Not started</div>
+
+              <!-- action -->
+              <button id="mineActionBtn" class="btn btn-forest large">Start Mining</button>
+
+              <!-- animation wrapper (pickaxe + glow) is injected by JS addon if missing -->
+              <div id="mineMessage" class="muted" style="margin-top:10px"></div>
+            </div>
+
+            <!-- Mining history -->
+            <div style="margin-top:12px">
+              <h4 class="small">Mining History</h4>
+              <ul id="miningHistory" class="small muted"></ul>
+            </div>
+          </div>
         </div>
+      </section>
 
-        <button id="mineBtn" class="mine-btn">Start Mining</button>
-        <p id="status" class="status-text">Start mining — wait 2 hours — claim 5 TRX.</p>
-
-        <div class="pickaxe-container">
-          <div class="pickaxe"></div>
+      <!-- TEAM -->
+      <section id="page-team" class="page">
+        <div class="card">
+          <h3>🤝 Team & Invite</h3>
+          <p class="muted">Share your referral link — each signup adds to your team.</p>
+          <div class="invite-row">
+            <input id="refLink" readonly value="" />
+            <button id="copyRefBtn" class="btn white">Copy</button>
+            <button id="fakeInviteBtn" class="btn purple">+ Invite</button>
+          </div>
+          <div class="team-stats" style="margin-top:10px">
+            <div>Total invites: <strong id="teamCount">0</strong></div>
+            <div class="small muted">Use your link in Telegram or share</div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- TEAM -->
-    <section id="team" class="section">
-      <h3>👥 Your Team</h3>
-      <div class="card">
-        <p>Invite friends to earn more rewards!</p>
-        <p>Your total referrals: <b>0</b></p>
-        <button class="mine-btn small">Invite Now</button>
-      </div>
-    </section>
+      <!-- ME -->
+      <section id="page-me" class="page">
+        <div class="card">
+          <h3>👤 My Wallet</h3>
+          <div class="me-grid">
+            <div>TRX: <strong id="meTRX">0.00</strong></div>
+            <div>USDT: <strong id="meUSDT">0.000000</strong></div>
+            <div>Speed: <strong id="speedLabel">1.5 TRX/H</strong></div>
+            <div>Working: <strong>24H</strong></div>
+          </div>
 
-    <!-- ME -->
-    <section id="me" class="section">
-      <h3>👤 My Account</h3>
-      <div class="card">
-        <p><b>Wallet Address:</b></p>
-        <input type="text" value="TV1234...abcd" readonly>
-        <button class="mine-btn small">Copy Address</button>
-      </div>
+          <hr style="margin:12px 0">
 
-      <div class="card">
-        <h4>Withdraw TRX</h4>
-        <input type="number" placeholder="Enter amount">
-        <button class="mine-btn small">Withdraw</button>
-      </div>
+          <!-- Convert -->
+          <div class="card small-card">
+            <h4>Convert TRX → USDT</h4>
+            <div class="row">
+              <input id="convertInput" type="number" min="0.01" step="0.01" placeholder="TRX amount" />
+              <button id="convertDo" class="btn">Convert</button>
+            </div>
+            <div id="convertResult" class="muted small" style="margin-top:8px"></div>
+          </div>
 
-      <div class="card">
-        <h4>Invite Link</h4>
-        <input type="text" value="https://trxmine.com/invite/abcd1234" readonly>
-        <button class="mine-btn small">Copy Link</button>
-      </div>
-
-      <div class="card">
-        <h4>Mining History</h4>
-        <ul id="historyList">
-          <li>+5 TRX — 06 Nov 2025</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- VIP -->
-    <section id="vip" class="section">
-      <h3>💰 VIP Access</h3>
-      <div class="card">
-        <p>Upgrade your mining level to earn more TRX per cycle.</p>
-        <div class="vip-plan">
-          <h4>VIP 1</h4>
-          <p>Cost: 100 TRX</p>
-          <p>Reward: +10 TRX per 2h</p>
-          <button class="mine-btn small">Buy Now</button>
+          <!-- Withdraw -->
+          <div class="card small-card" style="margin-top:10px">
+            <h4>Withdraw (Send USDT)</h4>
+            <div class="row">
+              <select id="withdrawMethod">
+                <option value="bitget">Bitget</option>
+                <option value="bybit">Bybit</option>
+              </select>
+            </div>
+            <div class="row">
+              <input id="withdrawUID" placeholder="Enter receiver UID" />
+            </div>
+            <div class="row">
+              <input id="withdrawAmount" type="number" step="0.01" min="0.01" placeholder="Amount (USDT) — min 0.01" />
+            </div>
+            <div id="withdrawMsg" class="muted small" style="margin-top:8px"></div>
+            <div class="row">
+              <button id="submitWithdraw" class="btn btn-forest">Submit Withdraw</button>
+            </div>
+          </div>
         </div>
-        <div class="vip-plan">
-          <h4>VIP 2</h4>
-          <p>Cost: 250 TRX</p>
-          <p>Reward: +25 TRX per 2h</p>
-          <button class="mine-btn small">Buy Now</button>
-        </div>
-      </div>
-    </section>
-  </main>
+      </section>
 
-  <footer class="footer">
-    <button class="nav-btn active" data-target="mine">Mine</button>
-    <button class="nav-btn" data-target="team">Team</button>
-    <button class="nav-btn" data-target="me">Me</button>
-    <button class="nav-btn" data-target="vip">VIP</button>
-  </footer>
+      <!-- VIP -->
+      <section id="page-vip" class="page">
+        <div class="card">
+          <h3>⭐ VIP Center</h3>
+          <p class="muted">Choose VIP plan and follow instructions to pay. After submission admin will activate via Telegram within 24h.</p>
+
+          <div class="vip-list" style="margin-top:12px">
+            <!-- plans -->
+            <div class="vip-plan card small-card">
+              <strong>VIP 1</strong>
+              <div>Buy: <b>0.10 USDT</b></div>
+              <div>Daily earn: <b>0.40 USDT</b></div>
+              <div style="margin-top:8px"><button data-v="vip1" class="btn btn-violet buyVipBtn">Buy VIP 1</button></div>
+            </div>
+
+            <div class="vip-plan card small-card">
+              <strong>VIP 2</strong>
+              <div>Buy: <b>0.20 USDT</b></div>
+              <div>Daily earn: <b>0.15 USDT</b></div>
+              <div style="margin-top:8px"><button data-v="vip2" class="btn btn-violet buyVipBtn">Buy VIP 2</button></div>
+            </div>
+          </div>
+
+          <!-- submission form (shows after pick plan) -->
+          <div id="vipFormWrap" class="card small-card hidden" style="margin-top:12px">
+            <h4 id="vipFormTitle">VIP Payment</h4>
+            <div class="row">
+              <select id="vipExchange">
+                <option value="bitget">Bitget</option>
+                <option value="bybit">Bybit</option>
+              </select>
+            </div>
+            <div class="row"><input id="vipSenderUID" placeholder="Your exchange UID (sender)" /></div>
+            <div class="row"><input id="vipMemo" placeholder="Transaction ID / Memo" /></div>
+            <div class="row"><input id="vipFile" type="file" accept="image/*" /></div>
+            <div id="vipMsg" class="muted small" style="margin-top:8px"></div>
+            <div class="row"><button id="vipSubmit" class="btn btn-forest">Submit for Review</button><button id="vipCancel" class="btn">Cancel</button></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-target="page-mine" style="--c:#9fffd3">Mine</button>
+      <button class="nav-btn" data-target="page-team" style="--c:#fff7c6">Team</button>
+      <button class="nav-btn" data-target="page-me" style="--c:#d9f7ff">Me</button>
+      <button class="nav-btn" data-target="page-vip" style="--c:#f7ddff">VIP</button>
+    </nav>
+  </div>
 
   <script src="script.js"></script>
 </body>
