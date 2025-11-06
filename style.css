@@ -4,34 +4,63 @@
   --muted:#9fb7a5;
   --accent:#7ff3a8;
   --white:#f6f9f8;
-  --font:"Poppins", system-ui, Arial;
+  --glass: rgba(255,255,255,0.03);
+  --font: "Poppins", system-ui, Arial;
 }
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:var(--font);background:linear-gradient(180deg,var(--bg-dark),#00220f);color:var(--white)}
+html,body{height:100%;margin:0;font-family:var(--font);background:linear-gradient(180deg,var(--bg-dark),#00220f);color:var(--white);-webkit-font-smoothing:antialiased}
 .app{display:flex;flex-direction:column;height:100%}
 .topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:rgba(0,0,0,0.18);backdrop-filter:blur(6px)}
 .brand{display:flex;align-items:center;gap:10px}
 .logo-circle{width:42px;height:42px;border-radius:10px;background:linear-gradient(180deg,#075a2d,#0b8a51);display:flex;align-items:center;justify-content:center;font-weight:800;color:#e8fff1}
 .brand-text{font-weight:800;color:var(--accent)}
-.content{flex:1;overflow:auto;padding:12px;padding-bottom:96px}
-.card{background:linear-gradient(180deg,var(--card),#04281a);border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
-.mine-card{text-align:center}
-.progress-bar{width:160px;height:10px;background:rgba(0,0,0,0.25);border-radius:999px;overflow:hidden;margin:10px auto;border:1px solid rgba(255,255,255,0.05)}
+.profile{font-size:12px;color:var(--muted)}
+
+.content{flex:1;overflow:auto;padding:12px;padding-bottom:120px}
+.card{background:linear-gradient(180deg,var(--card),#04281a);border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.02)}
+.balance-row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.coin-label{background:rgba(0,0,0,0.28);padding:6px 10px;border-radius:8px;color:var(--muted);font-weight:700}
+.coin-amount{font-size:22px;font-weight:900;color:var(--accent);margin-top:6px}
+.small{font-size:12px}
+.muted{color:var(--muted)}
+
+.progress-bar{width:160px;height:10px;background:rgba(0,0,0,0.25);border-radius:999px;overflow:hidden;margin:0 auto;border:1px solid rgba(255,255,255,0.02);position:relative}
 #progressInner{width:0%;height:100%;background:linear-gradient(90deg,#1aff9b,#00c56a);transition:width .6s linear}
-.mine-animation{width:80px;height:80px;margin:10px auto;position:relative}
-.pickaxe,.ore{position:absolute;bottom:0;left:50%;transform:translateX(-50%)}
-.pickaxe{width:40px;height:40px;background:radial-gradient(circle,#19c06d,#0b9450);border-radius:50%;animation:mineAnim 1.2s infinite ease-in-out}
-.ore{width:18px;height:18px;background:#7ff3a8;border-radius:50%;bottom:10px;animation:orePulse 1.2s infinite ease-in-out}
-@keyframes mineAnim{0%,100%{transform:translate(-50%,0) rotate(-10deg)}50%{transform:translate(-50%,-12px) rotate(10deg)}}
-@keyframes orePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
-.bottom-nav{position:fixed;left:8px;right:8px;bottom:14px;background:linear-gradient(180deg,#022a12,#001a0a);padding:10px;border-radius:14px;display:flex;justify-content:space-around}
-.nav-btn{background:transparent;color:var(--muted);border:none;font-weight:700;padding:8px 10px;border-radius:8px}
-.nav-btn.active{color:var(--accent);box-shadow:0 8px 20px rgba(0,0,0,0.45)}
-.row{display:flex;gap:8px;align-items:center;margin-top:10px}
-.row input, .row select{flex:1;padding:10px;border-radius:8px;border:none;background:rgba(255,255,255,0.05);color:var(--white)}
-.btn{border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
-.btn-forest{background:linear-gradient(180deg,#19c06d,#0b9450);color:#042}
+.progress-timer{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
+
+.mine-card{text-align:center}
+.mine-status{font-weight:700;margin-bottom:8px}
+.btn{background:transparent;color:var(--white);border:none;padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,0.45);transition:transform .12s ease, box-shadow .12s ease}
+.btn:hover{transform:translateY(-3px)}
+.large{padding:14px 18px;font-size:16px}
+.btn-forest{background:linear-gradient(180deg,#19c06d,#0b9450);color:#042;border:2px solid rgba(255,255,255,0.03)}
+.btn-white{background:#eef8ef;color:#042}
+.white{background:#eef6ef;color:#042;font-weight:800}
 .btn-violet{background:linear-gradient(180deg,#9b6bff,#7e4bff);color:#fff}
 .btn-purple{background:linear-gradient(180deg,#b083ff,#8a5cff);color:#fff}
-.muted{color:var(--muted)}
+
+.me-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.me-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+.invite-row{display:flex;gap:8px}
+.invite-row input{flex:1;padding:10px;border-radius:8px;border:none;background:rgba(255,255,255,0.02);color:var(--white)}
+.small-card{padding:10px}
+
+.bottom-nav{position:fixed;left:8px;right:8px;bottom:14px;background:linear-gradient(180deg,#022a12,#001a0a);padding:10px;border-radius:14px;display:flex;justify-content:space-around;gap:12px;box-shadow:0 14px 40px rgba(0,0,0,0.6)}
+.nav-btn{background:transparent;color:var(--muted);border:none;font-weight:800;padding:8px 10px;cursor:pointer;border-radius:8px}
+.nav-btn.active{color:var(--accent);box-shadow:0 8px 20px rgba(0,0,0,0.45);transform:translateY(-3px)}
+
+.page{display:none;padding-bottom:90px}
+.page.active{display:block}
+
+/* form rows */
+.row{display:flex;gap:8px;align-items:center;margin-top:10px}
+.row input, .row select{flex:1;padding:10px;border-radius:8px;border:none;background:rgba(255,255,255,0.03);color:var(--white)}
+.right{justify-content:flex-end}
+
+/* smooth pickaxe addon */
+.mine-anim { display:flex; align-items:center; justify-content:center; margin-top:12px; pointer-events:none; height:92px; position:relative; transition:opacity .35s ease; opacity:0; }
+.mine-anim.anim-active { opacity:1; }
+.mine-anim .pickaxe { width:86px; height:86px; transform-origin:center bottom; will-change:transform, filter; filter: drop-shadow(0 8px 18px rgba(0,0,0,0.45)); animation: pick-bob 2.2s ease-in-out infinite; }
+@keyframes pick-bob { 0% { transform: translateY(0) rotate(-6deg) scale(1); } 25% { transform: translateY(-6px) rotate(0deg) scale(1.01); } 50% { transform: translateY(0) rotate(6deg) scale(1); } 75% { transform: translateY(-4px) rotate(0deg) scale(1.005); } 100% { transform: translateY(0) rotate(-6deg) scale(1); } }
 .hidden{display:none}
