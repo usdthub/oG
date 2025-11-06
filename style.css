@@ -46,3 +46,36 @@ html,body{
 .nav-btn.active{color:var(--accent);transform:translateY(-3px)}
 input,select{width:100%;margin:5px 0;padding:10px;border-radius:8px;border:none;background:rgba(255,255,255,0.08);color:var(--white)}
 .small{font-size:12px;color:var(--muted)}
+.mining-animation {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 15px auto;
+}
+.mining-animation .spin {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 5px solid rgba(0,255,150,0.2);
+  border-top-color: #00ff9b;
+  border-radius: 50%;
+  animation: spinAnim 2s linear infinite;
+}
+.mining-animation .glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: 0 0 25px 8px rgba(0,255,150,0.3);
+  animation: pulse 1.5s ease-in-out infinite alternate;
+}
+.hidden { display: none; }
+
+@keyframes spinAnim {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.2); opacity: 1; }
+}
