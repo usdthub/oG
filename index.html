@@ -3,24 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TRX Miner — Advanced</title>
+  <title>TRX Miner — Final</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app-shell">
-    <!-- TOPBAR -->
     <header class="topbar">
       <div class="brand">
         <div class="logo">TRX</div>
-        <div class="brand-text">TRX Miner — Advanced</div>
+        <div class="brand-text">TRX Miner — Final</div>
       </div>
       <div class="profile" id="profileLabel">Guest • Level 0</div>
     </header>
 
-    <!-- LAYOUT -->
     <div class="layout">
-      <!-- SIDEBAR NAV -->
       <aside class="sidebar">
         <nav class="nav">
           <button class="nav-btn active" data-target="page-mine">⛏️ Mine</button>
@@ -35,12 +32,11 @@
           <button id="copyRefBtn" class="small-btn">Copy</button>
         </div>
 
-        <div class="sidebar-foot">v: advanced · demo</div>
+        <div class="sidebar-foot">v: final • production-ready</div>
       </aside>
 
-      <!-- MAIN CONTENT -->
       <main class="main">
-        <!-- MINE PAGE -->
+        <!-- MINE -->
         <section id="page-mine" class="page active">
           <div class="panel">
             <div class="panel-head">
@@ -55,28 +51,22 @@
             </div>
 
             <div class="mine-area">
-              <!-- Left: coin visual -->
               <div class="mine-left">
-                <div class="coin-visual">
-                  <div class="coin-outer">
-                    <div class="coin-core">TRX</div>
-                  </div>
+                <div class="coin-visual" aria-hidden="true">
+                  <div class="coin-outer"><div class="coin-core">TRX</div></div>
                   <div class="beam beam-1"></div>
                   <div class="beam beam-2"></div>
                 </div>
 
                 <div class="balances">
-                  <div class="bal-item"><div class="label">TRX</div><div id="trxAmount" class="big">0.00</div></div>
+                  <div class="bal-item"><div class="label">TRX</div><div id="trxAmount" class="big">0.000000</div></div>
                   <div class="bal-item"><div class="label">USDT</div><div id="usdtAmount" class="big">0.000000</div></div>
                 </div>
               </div>
 
-              <!-- Right: controls -->
               <div class="mine-right">
                 <div class="progress-frame">
-                  <div class="progress-bar">
-                    <div id="progressInner" class="progressInner"></div>
-                  </div>
+                  <div class="progress-bar"><div id="progressInner" class="progressInner"></div></div>
                   <div class="progress-meta">
                     <div id="cycleLabel" class="muted small">Cycle: 2 hours</div>
                     <div id="rewardLabel" class="muted small">Reward: 5 TRX</div>
@@ -97,44 +87,36 @@
           </div>
         </section>
 
-        <!-- TEAM PAGE (only referral code) -->
+        <!-- TEAM -->
         <section id="page-team" class="page">
           <div class="panel">
             <h3>Team</h3>
-            <p class="muted">Share your referral code (no long URLs).</p>
+            <p class="muted">Share referral code only (no URLs).</p>
             <div class="team-stat">
               <div class="stat-num" id="teamCount">0</div>
               <div class="muted small">Total Invites</div>
             </div>
+
             <div style="margin-top:12px">
               <input id="refInput" readonly class="ref-input" />
               <button id="copyRefBtn2" class="btn small">Copy Code</button>
+              <button id="fakeInviteBtn" class="btn small">+ Add Fake Member</button>
             </div>
           </div>
         </section>
 
-        <!-- ME PAGE -->
+        <!-- ME -->
         <section id="page-me" class="page">
           <div class="panel">
             <h3>My Wallet & Tools</h3>
             <div class="wallet-grid">
-              <div class="wallet-card">
-                <div class="label">TRX</div>
-                <div id="meTRX" class="value">0.000000</div>
-              </div>
-              <div class="wallet-card">
-                <div class="label">USDT</div>
-                <div id="meUSDT" class="value">0.000000</div>
-              </div>
-              <div class="wallet-card">
-                <div class="label">Speed</div>
-                <div class="value">1.5 TRX/H</div>
-              </div>
+              <div class="wallet-card"><div class="label">TRX</div><div id="meTRX" class="value">0.000000</div></div>
+              <div class="wallet-card"><div class="label">USDT</div><div id="meUSDT" class="value">0.000000</div></div>
+              <div class="wallet-card"><div class="label">Speed</div><div class="value">1.5 TRX/H</div></div>
             </div>
 
             <hr/>
 
-            <!-- Convert -->
             <div class="form-row">
               <div class="form-left">
                 <label>Convert TRX → USDT</label>
@@ -148,14 +130,10 @@
 
             <hr/>
 
-            <!-- Withdraw -->
             <div class="withdraw-block">
               <label>Withdraw (USDT)</label>
               <div class="form-row">
-                <select id="withdrawMethod">
-                  <option value="bitget">Bitget</option>
-                  <option value="bybit">Bybit</option>
-                </select>
+                <select id="withdrawMethod"><option value="bitget">Bitget</option><option value="bybit">Bybit</option></select>
                 <input id="withdrawUID" placeholder="Receiver UID" />
                 <input id="withdrawAmount" type="number" step="0.01" min="0.01" placeholder="Amount (min 0.01 USDT)" />
                 <button id="submitWithdraw" class="btn btn-forest">Submit Withdraw</button>
@@ -165,7 +143,7 @@
           </div>
         </section>
 
-        <!-- VIP PAGE -->
+        <!-- VIP -->
         <section id="page-vip" class="page">
           <div class="panel">
             <h3>VIP Center</h3>
@@ -185,14 +163,10 @@
               </div>
             </div>
 
-            <!-- VIP form (hidden until buy clicked) -->
             <div id="vipForm" class="vip-form hidden">
               <h4 id="vipFormTitle">VIP Payment</h4>
               <div class="form-row">
-                <select id="vipExchange">
-                  <option value="bitget">Bitget</option>
-                  <option value="bybit">Bybit</option>
-                </select>
+                <select id="vipExchange"><option value="bitget">Bitget</option><option value="bybit">Bybit</option></select>
                 <input id="vipSenderUID" placeholder="Your exchange UID (sender)" />
               </div>
               <div class="form-row">
@@ -204,15 +178,14 @@
                 <button id="vipCancel" class="btn small">Cancel</button>
               </div>
               <div id="vipMsg" class="muted small" style="margin-top:8px"></div>
-              <div class="muted small" style="margin-top:8px">Send to Bitget UID: <b id="bitgetUID">9879164714</b> or Bybit UID: <b id="bybitUID">269645993</b></div>
+              <div class="muted small" style="margin-top:8px">Pay to Bitget UID: <b id="bitgetUID">9879164714</b> or Bybit UID: <b id="bybitUID">269645993</b></div>
             </div>
           </div>
         </section>
-
       </main>
     </div>
 
-    <footer class="app-foot">Demo — replace token for real Telegram notifications</footer>
+    <footer class="app-foot">Demo • Replace token for real Telegram</footer>
   </div>
 
   <script src="script.js"></script>
