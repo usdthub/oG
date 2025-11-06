@@ -1,278 +1,48 @@
-/* === CONFIG - put your real token later if needed === */
-const TELEGRAM_BOT_TOKEN = ""; // replace later if you want real telegram notifications
-const ADMIN_CHAT_ID = "7417215529"; // admin chat (as provided)
-
-/* === CONSTANTS === */
-const TRX_PRICE_USDT = 0.0006;    // <-- UPDATED PRICE (you asked)
-const REWARD_TRX = 5;
-const MINING_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours in ms
-
-/* === localStorage helpers === */
-function getState(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; } catch(e){ return d; } }
-function setState(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
-
-/* === initial state === */
-let state = getState('trx_app_v3', {
-  trx: 20,
-  usdt: 20 * TRX_PRICE_USDT,
-  teamCount: 0,
-  miningActive: false,
-  miningEnd: null,
-  miningHistory: [],
-  withdrawRequests: [],
-  vipRequests: [],
-  refId: null,
-  vipActive: null
-});
-if(!state.refId){ state.refId = Math.random().toString(36).slice(2,9); setState('trx_app_v3', state); }
-
-/* === DOM refs === */
-const pages = { mine: document.getElementById('page-mine'), team: document.getElementById('page-team'), me: document.getElementById('page-me'), vip: document.getElementById('page-vip') };
-const navBtns = Array.from(document.querySelectorAll('.nav-btn'));
-const trxAmountEl = document.getElementById('trxAmount');
-const meTRXEl = document.getElementById('meTRX');
-const meUSDTEl = document.getElementById('meUSDT');
-const progressInner = document.getElementById('progressInner');
-const progressTimer = document.getElementById('progressTimer');
-const mineActionBtn = document.getElementById('mineActionBtn');
-const mineStatus = document.getElementById('mineStatus');
-const mineMessage = document.getElementById('mineMessage');
-const miningHistoryEl = document.getElementById('miningHistory');
-const refLinkEl = document.getElementById('refLink');
-const teamCountEl = document.getElementById('teamCount');
-const copyRefBtn = document.getElementById('copyRefBtn');
-const fakeInviteBtn = document.getElementById('fakeInviteBtn');
-
-const convertInput = document.getElementById('convertInput');
-const convertDo = document.getElementById('convertDo');
-const convertResult = document.getElementById('convertResult');
-
-const withdrawMethod = document.getElementById('withdrawMethod');
-const withdrawUID = document.getElementById('withdrawUID');
-const withdrawAmount = document.getElementById('withdrawAmount');
-const submitWithdraw = document.getElementById('submitWithdraw');
-const withdrawMsg = document.getElementById('withdrawMsg');
-
-const buyVipBtns = Array.from(document.querySelectorAll('.buyVipBtn'));
-const vipFormWrap = document.getElementById('vipFormWrap');
-const vipFormTitle = document.getElementById('vipFormTitle');
-const vipExchange = document.getElementById('vipExchange');
-const vipSenderUID = document.getElementById('vipSenderUID');
-const vipMemo = document.getElementById('vipMemo');
-const vipFile = document.getElementById('vipFile');
-const vipSubmit = document.getElementById('vipSubmit');
-const vipCancel = document.getElementById('vipCancel');
-const vipMsg = document.getElementById('vipMsg');
-
-const bitgetUID = "9879164714";
-const bybitUID = "269645993";
-
-/* === UI: navigation === */
-navBtns.forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    navBtns.forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const target = btn.dataset.target;
-    Object.values(pages).forEach(p=>p.classList.remove('active'));
-    document.getElementById(target).classList.add('active');
-  });
-});
-
-/* === Render === */
-let miningInterval = null;
-function renderAll(){
-  // balances
-  trxAmountEl.innerText = parseFloat(state.trx).toFixed(2) + ' TRX';
-  meTRXEl && (meTRXEl.innerText = parseFloat(state.trx).toFixed(2));
-  meUSDTEl && (meUSDTEl.innerText = parseFloat(state.usdt).toFixed(6));
-  // other
-  teamCountEl && (teamCountEl.innerText = state.teamCount);
-  if(!state.refId){ state.refId = Math.random().toString(36).slice(2,9); setState('trx_app_v3', state); }
-  refLinkEl && (refLinkEl.value = `${location.origin}${location.pathname}?ref=${state.refId}`);
-  renderMiningUI();
-  renderHistory();
-  setState('trx_app_v3', state);
-}
-function renderHistory(){
-  if(!miningHistoryEl) return;
-  miningHistoryEl.innerHTML = '';
-  (state.miningHistory||[]).slice().reverse().forEach(h=>{
-    const li = document.createElement('li');
-    li.innerText = `${h.text} — ${new Date(h.time).toLocaleString()}`;
-    miningHistoryEl.appendChild(li);
-  });
+:root {
+  --bg-dark:#031b0e;
+  --card:#052814;
+  --muted:#a4bfa8;
+  --accent:#7ff3a8;
+  --white:#f4f8f6;
+  --font:"Poppins", system-ui;
 }
 
-/* === Mining UI & logic (persistent) === */
-function updateMiningUI(){
-  if(state.miningActive && state.miningEnd){
-    const remaining = state.miningEnd - Date.now();
-    if(remaining <= 0){
-      progressInner.style.width = '100%';
-      progressTimer.innerText = 'Ready to claim';
-      mineActionBtn.innerText = `Collect Reward (${REWARD_TRX} TRX)`;
-      mineActionBtn.disabled = false;
-      mineStatus.innerText = 'Completed';
-      mineActionBtn.onclick = collectReward;
-      if(miningInterval){ clearInterval(miningInterval); miningInterval = null; }
-    } else {
-      const pct = Math.max(0, Math.min(100, ((MINING_DURATION_MS - remaining)/MINING_DURATION_MS)*100));
-      progressInner.style.width = pct + '%';
-      const hrs = Math.floor(remaining / (1000*60*60));
-      const mins = Math.floor((remaining % (1000*60*60)) / (1000*60));
-      const secs = Math.floor((remaining % (1000*60)) / 1000);
-      progressTimer.innerText = `Time: ${hrs}h ${mins}m ${secs}s`;
-      mineActionBtn.innerText = 'Mining...';
-      mineActionBtn.disabled = true;
-      mineStatus.innerText = 'Mining';
-      mineActionBtn.onclick = null;
-      if(!miningInterval){ miningInterval = setInterval(()=>{ updateMiningUI(); },1000); }
-    }
-  } else {
-    progressInner.style.width = '0%';
-    progressTimer.innerText = 'Not started';
-    mineActionBtn.innerText = 'Start Mining';
-    mineActionBtn.disabled = false;
-    mineStatus.innerText = 'Not started';
-    mineActionBtn.onclick = startMining;
-    if(miningInterval){ clearInterval(miningInterval); miningInterval = null; }
-  }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  height:100%;
+  font-family:var(--font);
+  background:linear-gradient(180deg,var(--bg-dark),#00240f);
+  color:var(--white);
 }
-function renderMiningUI(){ updateMiningUI(); }
+.app{display:flex;flex-direction:column;height:100%}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:rgba(0,0,0,0.2);backdrop-filter:blur(6px)}
+.logo-circle{width:42px;height:42px;border-radius:10px;background:linear-gradient(180deg,#0a8b50,#13c978);display:flex;align-items:center;justify-content:center;font-weight:800}
+.brand-text{font-weight:800;color:var(--accent)}
+.content{flex:1;overflow:auto;padding:12px;padding-bottom:96px}
+.card{background:linear-gradient(180deg,var(--card),#042010);border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
+.page{display:none}
+.page.active{display:block}
 
-function startMining(){
-  if(state.miningActive) return;
-  state.miningActive = true;
-  state.miningEnd = Date.now() + MINING_DURATION_MS;
-  state.miningStart = Date.now();
-  setState('trx_app_v3', state);
-  mineMessage && (mineMessage.innerText = `Mining started — come back after ${MINING_DURATION_MS/(1000*60*60)} hours to claim.`);
-  renderAll();
+.btn{border:none;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;transition:0.2s}
+.btn-forest{background:linear-gradient(180deg,#1fd26b,#12b45a);color:#042;}
+.btn-purple{background:linear-gradient(180deg,#7d59ff,#9a7bff);color:white;}
+.btn:hover{transform:translateY(-3px)}
+
+.progress-bar{width:90%;height:12px;margin:12px auto;background:rgba(255,255,255,0.1);border-radius:999px;overflow:hidden;position:relative}
+.progress-inner{height:100%;width:0%;background:linear-gradient(90deg,#00ff9b,#00c56a);animation:glow 2s infinite alternate;transition:width 0.5s ease}
+@keyframes glow{
+  0%{box-shadow:0 0 10px #00ff9b;}
+  100%{box-shadow:0 0 25px #00ff9b;}
 }
+.progress-timer{text-align:center;margin-top:6px;color:var(--muted)}
 
-function collectReward(){
-  const reward = REWARD_TRX;
-  state.trx = parseFloat((parseFloat(state.trx) + reward).toFixed(6));
-  state.usdt = parseFloat((state.trx * TRX_PRICE_USDT).toFixed(6));
-  state.miningActive = false;
-  state.miningEnd = null;
-  state.miningHistory = state.miningHistory || [];
-  state.miningHistory.push({ text: `+${reward} TRX (mine)`, time: Date.now() });
-  setState('trx_app_v3', state);
-  mineMessage && (mineMessage.innerText = `✅ You collected ${reward} TRX!`);
-  // notify (if token set)
-  sendTelegramMessage(`⛏️ Claim\nRef:${state.refId}\nReward:${reward} TRX\nNew TRX:${state.trx.toFixed(6)}`);
-  renderAll();
+.bottom-nav{
+  position:fixed;bottom:14px;left:8px;right:8px;
+  display:flex;justify-content:space-around;
+  background:linear-gradient(180deg,#01280e,#001d0b);
+  border-radius:14px;padding:10px;box-shadow:0 8px 30px rgba(0,0,0,0.6)
 }
-
-/* === Convert TRX -> USDT (ME) === */
-convertDo?.addEventListener('click', ()=>{
-  const v = parseFloat(convertInput.value || 0);
-  if(!v || v <= 0){ alert('Enter TRX amount'); return; }
-  if(v > state.trx){ alert('Not enough TRX'); return; }
-  const converted = v * TRX_PRICE_USDT;
-  state.trx = parseFloat((state.trx - v).toFixed(6));
-  state.usdt = parseFloat((state.usdt + converted).toFixed(6));
-  setState('trx_app_v3', state);
-  convertResult.innerText = `Converted ${v} TRX → ${converted.toFixed(6)} USDT`;
-  sendTelegramMessage(`🔁 Convert\nRef:${state.refId}\nTRX:${v}\nUSDT:${converted.toFixed(6)}`);
-  renderAll();
-});
-
-/* === Withdraw === */
-submitWithdraw?.addEventListener('click', ()=>{
-  const method = withdrawMethod.value;
-  const uid = withdrawUID.value.trim();
-  const amount = parseFloat(withdrawAmount.value||0);
-  if(!uid){ alert('Enter UID'); return; }
-  if(isNaN(amount) || amount < 0.01){ alert('Enter valid amount >= 0.01 USDT'); return; }
-  if(amount > state.usdt){ alert('Not enough USDT'); return; }
-  state.usdt = parseFloat((state.usdt - amount).toFixed(6));
-  state.withdrawRequests = state.withdrawRequests || [];
-  const req = { ref: state.refId, method, uid, amount, time: Date.now() };
-  state.withdrawRequests.push(req);
-  setState('trx_app_v3', state);
-  withdrawMsg.innerText = `Withdraw submitted: ${amount.toFixed(6)} USDT to ${method} UID ${uid}`;
-  sendTelegramMessage(`💸 Withdraw\nRef:${state.refId}\nMethod:${method}\nUID:${uid}\nAmount:${amount.toFixed(6)} USDT`);
-  renderAll();
-});
-
-/* === Invite / Copy ref === */
-fakeInviteBtn?.addEventListener('click', ()=>{
-  state.teamCount = parseInt(state.teamCount) + 1;
-  setState('trx_app_v3', state);
-  renderAll();
-});
-copyRefBtn?.addEventListener('click', ()=> {
-  refLinkEl && navigator.clipboard && navigator.clipboard.writeText(refLinkEl.value);
-  alert('Referral link copied!');
-});
-
-/* === VIP flow === */
-let selectedVipPlan = null;
-buyVipBtns.forEach(b=>{
-  b.addEventListener('click', ()=>{
-    selectedVipPlan = b.dataset.v;
-    vipFormTitle.innerText = `Pay for ${selectedVipPlan === 'vip1' ? 'VIP 1' : 'VIP 2'} — ${selectedVipPlan === 'vip1' ? '0.10' : '0.20'} USDT`;
-    vipMsg.innerText = `Send ${selectedVipPlan === 'vip1' ? '0.10' : '0.20'} USDT to Bitget (${bitgetUID}) or Bybit (${bybitUID}). Then upload proof and submit.`;
-    vipFormWrap.classList.remove('hidden');
-  });
-});
-vipCancel?.addEventListener('click', ()=>{
-  vipFormWrap.classList.add('hidden');
-  selectedVipPlan = null;
-  vipMsg.innerText = '';
-});
-vipSubmit?.addEventListener('click', ()=>{
-  const exch = vipExchange.value;
-  const sender = vipSenderUID.value.trim();
-  const memo = vipMemo.value.trim();
-  const file = vipFile.files[0];
-  if(!selectedVipPlan){ alert('Choose a VIP plan'); return; }
-  if(!sender || !memo){ alert('Enter sender UID and memo'); return; }
-  state.vipRequests = state.vipRequests || [];
-  const req = { plan: selectedVipPlan, ref: state.refId, exchange: exch, sender, memo, time: Date.now() };
-  state.vipRequests.push(req);
-  setState('trx_app_v3', state);
-  vipMsg.innerText = 'VIP request submitted. Admin will review within 24h.';
-  if(file){
-    const reader = new FileReader();
-    reader.onload = e => { state[`vip_proof_${Date.now()}`] = e.target.result; setState('trx_app_v3', state); };
-    reader.readAsDataURL(file);
-  }
-  sendTelegramMessage(`🌟 VIP Request\nPlan:${selectedVipPlan}\nRef:${state.refId}\nExchange:${exch}\nSender:${sender}\nMemo:${memo}\nFee:${selectedVipPlan==='vip1'?0.10:0.20} USDT`);
-  vipFormWrap.classList.add('hidden');
-  selectedVipPlan = null;
-});
-
-/* === Telegram sender (only if token present) === */
-function sendTelegramMessage(message){
-  if(!TELEGRAM_BOT_TOKEN || !ADMIN_CHAT_ID){ console.log('TG not configured:', message); return; }
-  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-  fetch(url, {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json' },
-    body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: message })
-  }).then(r=>r.json()).then(j=>console.log('tg ok', j)).catch(e=>console.error('tg err', e));
-}
-
-/* === Startup: resume mining if needed, initial render === */
-(function init(){
-  // ensure numeric types
-  state.trx = parseFloat(state.trx);
-  state.usdt = parseFloat(state.usdt);
-  // update price label if exists
-  const priceLabel = document.getElementById('priceLabel');
-  if(priceLabel) priceLabel.innerText = `1 TRX = ${TRX_PRICE_USDT} USDT`;
-  // resume mining if end in future
-  if(state.miningActive && state.miningEnd && Date.now() < state.miningEnd){
-    // let updateMiningUI handle it
-  } else {
-    if(state.miningEnd && Date.now() >= state.miningEnd){
-      // expired but not claimed -> keep as ready
-      state.miningActive = false;
-      state.miningEnd = null;
-    }
-  }
-  renderAll();
-})();
+.nav-btn{background:transparent;color:var(--muted);border:none;font-weight:700;cursor:pointer;border-radius:8px;padding:8px 10px}
+.nav-btn.active{color:var(--accent);transform:translateY(-3px)}
+input,select{width:100%;margin:5px 0;padding:10px;border-radius:8px;border:none;background:rgba(255,255,255,0.08);color:var(--white)}
+.small{font-size:12px;color:var(--muted)}
