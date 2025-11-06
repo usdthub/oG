@@ -12,7 +12,7 @@ navButtons.forEach((btn) => {
   });
 });
 
-// === Mining Logic with Save ===
+// === Mining Logic with Auto Save ===
 const mineBtn = document.getElementById("mineBtn");
 const progressBar = document.getElementById("progressBar");
 const timerDisplay = document.getElementById("timerDisplay");
