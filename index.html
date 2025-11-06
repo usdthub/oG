@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TRX Mining Live</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="header">
@@ -13,13 +13,11 @@
   </header>
 
   <main>
+    <!-- MINE -->
     <section id="mine" class="section active">
       <div class="trx-box">
-        <div class="trx-info">
-          <h2>TRX Balance</h2>
-          <p class="trx-value">25.00 TRX</p>
-          <small>1 TRX = 0.002 USDT</small>
-        </div>
+        <h2>TRX Balance</h2>
+        <p id="trxValue" class="trx-value">25.00 TRX</p>
       </div>
 
       <div class="mining-box">
@@ -30,11 +28,8 @@
           <div id="progressBar" class="progress-bar"></div>
         </div>
 
-        <button id="miningButton" class="mine-btn">Start Mining</button>
-
-        <p id="miningStatus" class="status-text">
-          Start mining — wait 2 hours — claim 5 TRX.
-        </p>
+        <button id="mineBtn" class="mine-btn">Start Mining</button>
+        <p id="status" class="status-text">Start mining — wait 2 hours — claim 5 TRX.</p>
 
         <div class="pickaxe-container">
           <div class="pickaxe"></div>
@@ -42,16 +37,19 @@
       </div>
     </section>
 
+    <!-- TEAM -->
     <section id="team" class="section">
       <h3>👥 Your Team</h3>
       <p>Invite friends to earn more rewards!</p>
     </section>
 
+    <!-- ME -->
     <section id="me" class="section">
       <h3>👤 Profile</h3>
       <p>Manage your account and check mining history.</p>
     </section>
 
+    <!-- VIP -->
     <section id="vip" class="section">
       <h3>💰 VIP Access</h3>
       <p>Upgrade to increase mining speed and rewards.</p>
