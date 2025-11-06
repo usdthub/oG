@@ -1,191 +1,109 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TRX Miner — Final</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TRX Green-V</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="brand">
-        <div class="logo">TRX</div>
-        <div class="brand-text">TRX Miner — Final</div>
-      </div>
-      <div class="profile" id="profileLabel">Guest • Level 0</div>
-    </header>
+  <div class="container">
+    <nav class="sidebar">
+      <ul>
+        <li id="mineBtn" class="active">Mine</li>
+        <li id="teamBtn">Team</li>
+        <li id="meBtn">Me</li>
+        <li id="vipBtn">VIP</li>
+      </ul>
+    </nav>
 
-    <div class="layout">
-      <aside class="sidebar">
-        <nav class="nav">
-          <button class="nav-btn active" data-target="page-mine">⛏️ Mine</button>
-          <button class="nav-btn" data-target="page-team">🤝 Team</button>
-          <button class="nav-btn" data-target="page-me">👤 Me</button>
-          <button class="nav-btn" data-target="page-vip">⭐ VIP</button>
-        </nav>
-
-        <div class="ref-box">
-          <div class="ref-label">Referral Code</div>
-          <div id="refCode" class="ref-code">—</div>
-          <button id="copyRefBtn" class="small-btn">Copy</button>
+    <main class="content">
+      <!-- MINE SECTION -->
+      <section id="mineSection" class="section active">
+        <div class="card mining-center">
+          <h2>Mining Center</h2>
+          <p>1 TRX = 0.0006 USDT</p>
+          <div class="mine-animation">
+            <div class="coin"></div>
+            <div class="glow"></div>
+          </div>
+          <p>Cycle: 2 hours | Reward: 5 TRX</p>
+          <button id="startMining">Start Mining</button>
+          <div class="status">
+            <p id="mineStatus">Mining stopped</p>
+          </div>
+          <div id="mineHistory"></div>
         </div>
+      </section>
 
-        <div class="sidebar-foot">v: final • production-ready</div>
-      </aside>
+      <!-- TEAM SECTION -->
+      <section id="teamSection" class="section">
+        <div class="card">
+          <h2>Team</h2>
+          <p>Share referral code only (no URLs).</p>
+          <h3 id="totalInvites">0</h3>
+          <p>Total Invites</p>
+          <input type="text" id="refCode" readonly value="QYFANTH" />
+          <button id="copyRef">Copy Code</button>
+          <button id="fakeMember">+ Add Fake Member</button>
+        </div>
+      </section>
 
-      <main class="main">
-        <!-- MINE -->
-        <section id="page-mine" class="page active">
-          <div class="panel">
-            <div class="panel-head">
-              <div>
-                <h2>Mining Center</h2>
-                <div class="muted small">1 TRX = <span id="priceLabel">0.0006</span> USDT</div>
-              </div>
-              <div class="status-mini">
-                <div id="mineStatus">Not started</div>
-                <div id="progressTimer" class="muted small">Time: —</div>
-              </div>
+      <!-- ME SECTION -->
+      <section id="meSection" class="section">
+        <div class="card wallet">
+          <h2>My Wallet & Tools</h2>
+          <p><b>TRX:</b> <span id="trxBal">0.000000</span> | <b>USDT:</b> <span id="usdtBal">0.000000</span></p>
+          <p><b>Speed:</b> 1.5 TRX/H</p>
+
+          <h3>Convert TRX → USDT</h3>
+          <input type="number" id="trxAmount" placeholder="Enter TRX amount">
+          <button id="convertBtn">Convert</button>
+
+          <h3>Withdraw (USDT)</h3>
+          <select id="exchange">
+            <option>Bybit</option>
+            <option>Bitget</option>
+          </select>
+          <input type="number" id="uid" placeholder="UID">
+          <input type="number" id="withdrawAmt" placeholder="0.01">
+          <button id="withdrawBtn">Submit Withdraw</button>
+          <p id="withdrawMsg"></p>
+        </div>
+      </section>
+
+      <!-- VIP SECTION -->
+      <section id="vipSection" class="section">
+        <div class="card vip-center">
+          <h2>VIP Center</h2>
+          <div class="vip-options">
+            <div class="vip">
+              <h3>VIP 1</h3>
+              <p>Fee: 0.10 USDT</p>
+              <p>Daily: 0.04 USDT</p>
+              <button class="buyVip" data-level="1">Buy VIP 1</button>
             </div>
-
-            <div class="mine-area">
-              <div class="mine-left">
-                <div class="coin-visual" aria-hidden="true">
-                  <div class="coin-outer"><div class="coin-core">TRX</div></div>
-                  <div class="beam beam-1"></div>
-                  <div class="beam beam-2"></div>
-                </div>
-
-                <div class="balances">
-                  <div class="bal-item"><div class="label">TRX</div><div id="trxAmount" class="big">0.000000</div></div>
-                  <div class="bal-item"><div class="label">USDT</div><div id="usdtAmount" class="big">0.000000</div></div>
-                </div>
-              </div>
-
-              <div class="mine-right">
-                <div class="progress-frame">
-                  <div class="progress-bar"><div id="progressInner" class="progressInner"></div></div>
-                  <div class="progress-meta">
-                    <div id="cycleLabel" class="muted small">Cycle: 2 hours</div>
-                    <div id="rewardLabel" class="muted small">Reward: 5 TRX</div>
-                  </div>
-                </div>
-
-                <div class="controls">
-                  <button id="mineActionBtn" class="btn action">Start Mining</button>
-                  <div id="mineMessage" class="muted small" style="margin-top:10px"></div>
-
-                  <div class="history">
-                    <h4 class="small muted">Mining History</h4>
-                    <ul id="miningHistory" class="history-list"></ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- TEAM -->
-        <section id="page-team" class="page">
-          <div class="panel">
-            <h3>Team</h3>
-            <p class="muted">Share referral code only (no URLs).</p>
-            <div class="team-stat">
-              <div class="stat-num" id="teamCount">0</div>
-              <div class="muted small">Total Invites</div>
-            </div>
-
-            <div style="margin-top:12px">
-              <input id="refInput" readonly class="ref-input" />
-              <button id="copyRefBtn2" class="btn small">Copy Code</button>
-              <button id="fakeInviteBtn" class="btn small">+ Add Fake Member</button>
+            <div class="vip">
+              <h3>VIP 2</h3>
+              <p>Fee: 0.20 USDT</p>
+              <p>Daily: 0.15 USDT</p>
+              <button class="buyVip" data-level="2">Buy VIP 2</button>
             </div>
           </div>
-        </section>
 
-        <!-- ME -->
-        <section id="page-me" class="page">
-          <div class="panel">
-            <h3>My Wallet & Tools</h3>
-            <div class="wallet-grid">
-              <div class="wallet-card"><div class="label">TRX</div><div id="meTRX" class="value">0.000000</div></div>
-              <div class="wallet-card"><div class="label">USDT</div><div id="meUSDT" class="value">0.000000</div></div>
-              <div class="wallet-card"><div class="label">Speed</div><div class="value">1.5 TRX/H</div></div>
-            </div>
-
-            <hr/>
-
-            <div class="form-row">
-              <div class="form-left">
-                <label>Convert TRX → USDT</label>
-                <input id="convertInput" type="number" min="0.01" step="0.01" placeholder="Enter TRX amount" />
-              </div>
-              <div class="form-right">
-                <button id="convertDo" class="btn">Convert</button>
-                <div id="convertResult" class="muted small" style="margin-top:8px"></div>
-              </div>
-            </div>
-
-            <hr/>
-
-            <div class="withdraw-block">
-              <label>Withdraw (USDT)</label>
-              <div class="form-row">
-                <select id="withdrawMethod"><option value="bitget">Bitget</option><option value="bybit">Bybit</option></select>
-                <input id="withdrawUID" placeholder="Receiver UID" />
-                <input id="withdrawAmount" type="number" step="0.01" min="0.01" placeholder="Amount (min 0.01 USDT)" />
-                <button id="submitWithdraw" class="btn btn-forest">Submit Withdraw</button>
-              </div>
-              <div id="withdrawMsg" class="muted small" style="margin-top:8px"></div>
-            </div>
+          <div class="vip-form">
+            <select id="vipExchange">
+              <option>Bitget</option>
+              <option>Bybit</option>
+            </select>
+            <input type="text" id="vipUid" placeholder="Your exchange UID (sender)">
+            <input type="file" id="proofFile">
+            <button id="vipSubmit">Submit for Review</button>
+            <p>Send to Bitget UID: <b>9879164714</b> or Bybit UID: <b>269645993</b></p>
           </div>
-        </section>
-
-        <!-- VIP -->
-        <section id="page-vip" class="page">
-          <div class="panel">
-            <h3>VIP Center</h3>
-            <div class="vip-grid">
-              <div class="vip-card" data-plan="vip1">
-                <div class="vip-title">VIP 1</div>
-                <div class="vip-cost">Fee: 0.10 USDT</div>
-                <div class="vip-daily">Daily: 0.04 USDT</div>
-                <button class="btn buyVipBtn">Buy VIP 1</button>
-              </div>
-
-              <div class="vip-card" data-plan="vip2">
-                <div class="vip-title">VIP 2</div>
-                <div class="vip-cost">Fee: 0.20 USDT</div>
-                <div class="vip-daily">Daily: 0.15 USDT</div>
-                <button class="btn buyVipBtn">Buy VIP 2</button>
-              </div>
-            </div>
-
-            <div id="vipForm" class="vip-form hidden">
-              <h4 id="vipFormTitle">VIP Payment</h4>
-              <div class="form-row">
-                <select id="vipExchange"><option value="bitget">Bitget</option><option value="bybit">Bybit</option></select>
-                <input id="vipSenderUID" placeholder="Your exchange UID (sender)" />
-              </div>
-              <div class="form-row">
-                <input id="vipMemo" placeholder="Transaction ID / Memo" />
-                <input id="vipFile" type="file" accept="image/*" />
-              </div>
-              <div class="form-row">
-                <button id="vipSubmit" class="btn btn-forest">Submit for Review</button>
-                <button id="vipCancel" class="btn small">Cancel</button>
-              </div>
-              <div id="vipMsg" class="muted small" style="margin-top:8px"></div>
-              <div class="muted small" style="margin-top:8px">Pay to Bitget UID: <b id="bitgetUID">9879164714</b> or Bybit UID: <b id="bybitUID">269645993</b></div>
-            </div>
-          </div>
-        </section>
-      </main>
-    </div>
-
-    <footer class="app-foot">Demo • Replace token for real Telegram</footer>
+        </div>
+      </section>
+    </main>
   </div>
 
   <script src="script.js"></script>
