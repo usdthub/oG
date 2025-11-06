@@ -3,24 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <title>TRX Miner — Mobile</title>
-
-  <!-- Google font -->
+  <title>TRX Miner — VIP Telegram Control</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <!-- Main stylesheet -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!--
-    TRX Miner — Mobile
-    Full manual single-page app for mobile use.
-    Sections (Mine / Team / Me / VIP) are separate and only one active at a time.
-    Do not remove IDs - script.js depends on them.
-  -->
-
   <div id="app" class="app">
 
-    <!-- HEADER (single, no duplicates) -->
+    <!-- HEADER -->
     <header class="topbar">
       <div class="brand-row">
         <div class="logo-pill">TRX</div>
@@ -29,10 +19,10 @@
       <div id="profileLabel" class="profile">Guest • Level 0</div>
     </header>
 
-    <!-- CONTENT AREA (pages) -->
+    <!-- CONTENT -->
     <main class="content">
 
-      <!-- MINE PAGE -->
+      <!-- MINE -->
       <section id="page-mine" class="page active">
         <div class="card">
           <div class="card-head">
@@ -47,7 +37,6 @@
           </div>
 
           <div class="mine-body">
-            <!-- Visual coin -->
             <div class="visual-wrap">
               <div class="coin-visual" aria-hidden="true">
                 <div class="coin-outer"><div class="coin-core">TRX</div></div>
@@ -64,10 +53,17 @@
                   <div class="label">USDT</div>
                   <div id="usdtAmount" class="big">0.000000</div>
                 </div>
+                <div class="bal">
+                  <div class="label">Account ID</div>
+                  <div id="accountId" class="big">-</div>
+                </div>
+                <div class="bal">
+                  <div class="label">VIP</div>
+                  <div id="vipStatus" class="big">None</div>
+                </div>
               </div>
             </div>
 
-            <!-- Controls + progress -->
             <div class="controls-wrap">
               <div class="progress-frame">
                 <div class="progress-bar"><div id="progressInner" class="progressInner"></div></div>
@@ -91,7 +87,7 @@
         </div>
       </section>
 
-      <!-- TEAM PAGE -->
+      <!-- TEAM -->
       <section id="page-team" class="page">
         <div class="card">
           <h2 class="page-title">Team</h2>
@@ -114,7 +110,7 @@
         </div>
       </section>
 
-      <!-- ME PAGE -->
+      <!-- ME -->
       <section id="page-me" class="page">
         <div class="card">
           <h2 class="page-title">My Wallet & Tools</h2>
@@ -136,7 +132,6 @@
 
           <hr class="sep" />
 
-          <!-- Convert -->
           <div class="form-row">
             <div class="form-left">
               <label class="lbl">Convert TRX → USDT</label>
@@ -150,7 +145,6 @@
 
           <hr class="sep" />
 
-          <!-- Withdraw -->
           <div class="withdraw-block">
             <label class="lbl">Withdraw (USDT)</label>
             <div class="form-row">
@@ -169,7 +163,7 @@
         </div>
       </section>
 
-      <!-- VIP PAGE -->
+      <!-- VIP -->
       <section id="page-vip" class="page">
         <div class="card">
           <h2 class="page-title">VIP Center</h2>
@@ -177,15 +171,15 @@
           <div class="vip-grid">
             <div class="vip-card" data-plan="vip1">
               <div class="vip-title">VIP 1</div>
-              <div class="vip-cost">Fee: 0.10 USDT</div>
-              <div class="vip-daily">Daily: 0.04 USDT</div>
+              <div class="vip-cost">Fee: 1.00 USDT</div>
+              <div class="vip-daily">Daily: 0.50 USDT</div>
               <button class="btn buyVipBtn">Buy VIP 1</button>
             </div>
 
             <div class="vip-card" data-plan="vip2">
               <div class="vip-title">VIP 2</div>
-              <div class="vip-cost">Fee: 0.20 USDT</div>
-              <div class="vip-daily">Daily: 0.15 USDT</div>
+              <div class="vip-cost">Fee: 10.00 USDT</div>
+              <div class="vip-daily">Daily: 6.00 USDT</div>
               <button class="btn buyVipBtn">Buy VIP 2</button>
             </div>
           </div>
@@ -215,7 +209,7 @@
 
     </main>
 
-    <!-- BOTTOM NAV (mobile thumb reach) -->
+    <!-- BOTTOM NAV -->
     <nav class="bottom-nav">
       <button class="nav-btn active" data-target="page-mine">Mine</button>
       <button class="nav-btn" data-target="page-team">Team</button>
@@ -225,7 +219,6 @@
 
   </div>
 
-  <!-- Main script -->
   <script src="script.js"></script>
 </body>
 </html>
