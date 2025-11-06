@@ -28,22 +28,19 @@ body {
   display: block;
 }
 
-.trx-box {
+.card {
   background: #1e293b;
-  margin: 20px auto;
-  padding: 15px;
   border-radius: 10px;
+  padding: 15px;
+  margin: 15px auto;
   width: 90%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
 
 .trx-value {
   font-size: 1.5em;
   font-weight: bold;
   color: #38bdf8;
-}
-
-.mining-box {
-  margin-top: 20px;
 }
 
 .mine-btn {
@@ -60,6 +57,11 @@ body {
 
 .mine-btn:hover {
   background: #0ea5e9;
+}
+
+.mine-btn.small {
+  padding: 6px 14px;
+  font-size: 0.85em;
 }
 
 .progress-container {
@@ -118,4 +120,21 @@ body {
 
 .nav-btn.active {
   color: #38bdf8;
+}
+
+input {
+  width: 90%;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  margin: 5px 0;
+  background: #0f172a;
+  color: #fff;
+}
+
+.vip-plan {
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px 0;
 }
