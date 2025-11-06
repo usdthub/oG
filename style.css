@@ -1,103 +1,91 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+/* -------------------------
+   Advanced Futuristic UI CSS
+   Replace your old style.css fully with this
+   ------------------------- */
+:root{
+  --bg:#04100b;
+  --panel:#072118;
+  --accent:#00ff9b;
+  --accent-2:#6be7c4;
+  --muted:#9bb99f;
+  --glass: rgba(255,255,255,0.03);
+  --border: rgba(0,255,150,0.06);
+  --font: "Poppins", system-ui, sans-serif;
 }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:var(--font);background:radial-gradient(circle at 12% 12%, rgba(0,255,150,0.02), transparent), linear-gradient(180deg,var(--bg),#00100a);color:#eafaf1;-webkit-font-smoothing:antialiased}
+.app-shell{display:flex;flex-direction:column;min-height:100vh}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.02)}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(180deg,#00c985,#006b3b);display:flex;align-items:center;justify-content:center;font-weight:900;color:#021a10}
+.brand-text{font-weight:800;color:var(--accent)}
+.profile{color:var(--muted)}
 
-body {
-  background: #0d0f18;
-  color: #fff;
-  text-align: center;
-  padding-bottom: 70px;
-}
+.layout{display:grid;grid-template-columns:240px 1fr;gap:18px;padding:18px;flex:1}
+.sidebar{display:flex;flex-direction:column;gap:12px}
+.nav{display:flex;flex-direction:column;gap:8px}
+.nav-btn{background:transparent;border:none;padding:12px;border-radius:10px;color:var(--muted);text-align:left;cursor:pointer;font-weight:700}
+.nav-btn.active{background:linear-gradient(90deg, rgba(0,255,150,0.04), rgba(0,255,150,0.02));color:var(--accent);box-shadow:0 8px 30px rgba(0,255,150,0.03)}
+.ref-box{margin-top:auto;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);padding:12px;border-radius:10px;border:1px solid var(--border)}
+.ref-label{font-size:12px;color:var(--muted)}
+.ref-code{font-weight:900;color:var(--accent);letter-spacing:1px;margin:8px 0}
 
-header {
-  padding: 15px;
-  background: #111628;
-  box-shadow: 0 2px 10px #000;
-}
+.main{padding:0}
+.panel{background:linear-gradient(180deg,var(--panel), #041715);padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.02);box-shadow:0 10px 40px rgba(0,0,0,0.6)}
+.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
 
-.logo {
-  color: #1effc9;
-  font-size: 22px;
-}
+.mine-area{display:flex;gap:18px;align-items:flex-start}
+.mine-left{width:320px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.coin-visual{width:240px;height:240px;position:relative;display:flex;align-items:center;justify-content:center}
+.coin-outer{width:150px;height:150px;border-radius:999px;background:radial-gradient(circle,#06311b,#0b7a4f);display:flex;align-items:center;justify-content:center;border:4px solid rgba(0,255,150,0.06);box-shadow:0 12px 40px rgba(0,255,150,0.06);transition:transform .5s ease}
+.coin-core{font-weight:900;color:#001a10;background:linear-gradient(180deg,#9affc8,#00c56a);padding:12px 18px;border-radius:40px}
+.coin-outer.spin-active{animation:spinCoin 3s linear infinite}
+@keyframes spinCoin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 
-.page {
-  display: none;
-  padding: 20px;
-}
+.beam{position:absolute;border-radius:999px;filter:blur(18px);opacity:0.12}
+.beam-1{width:320px;height:320px;background:radial-gradient(circle, rgba(0,255,150,0.14), transparent)}
+.beam-2{width:440px;height:440px;background:radial-gradient(circle, rgba(0,200,180,0.08), transparent)}
 
-.page.active {
-  display: block;
-}
+.balances{width:100%;display:flex;flex-direction:column;gap:10px;align-items:center}
+.bal-item{width:90%;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);padding:8px;border-radius:10px;text-align:center}
+.bal-item .label{font-size:13px;color:var(--muted)} .big{font-weight:900;color:var(--accent);margin-top:6px}
 
-button {
-  background: #1effc9;
-  color: #000;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  margin-top: 10px;
-  cursor: pointer;
-  transition: 0.3s;
-}
+.mine-right{flex:1;display:flex;flex-direction:column;gap:12px}
+.progress-frame{padding:6px}
+.progress-bar{width:100%;height:18px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:999px;overflow:hidden;border:1px solid rgba(0,0,0,0.4)}
+.progressInner{height:100%;width:0%;background:linear-gradient(90deg,#00ff9b,#00c56a);box-shadow:0 6px 30px rgba(0,255,150,0.06);transition:width .6s linear}
 
-button:hover {
-  background: #0ddfb0;
-}
+.controls{display:flex;flex-direction:column;gap:12px}
+.btn{padding:10px 14px;border-radius:10px;border:none;font-weight:800;cursor:pointer}
+.btn.small{padding:8px 10px;font-size:14px}
+.btn.action{background:linear-gradient(90deg,#00ff9b,#00c56a);color:#022;box-shadow:0 8px 30px rgba(0,255,150,0.08)}
+.btn-forest{background:linear-gradient(90deg,#19c06d,#0b9450);color:#042}
+.history{margin-top:8px}
+.history-list{list-style:none;padding:0;margin:0;max-height:140px;overflow:auto}
+.history-list li{padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.02);font-size:13px;color:var(--muted)}
 
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #111628;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-  box-shadow: 0 -2px 10px #000;
-}
+.wallet-grid{display:flex;gap:12px;flex-wrap:wrap}
+.wallet-card{flex:1;padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);text-align:left}
+.wallet-card .label{font-size:12px;color:var(--muted)} .wallet-card .value{font-weight:900;color:var(--accent);margin-top:6px}
 
-.bottom-nav button {
-  flex: 1;
-  margin: 0 5px;
-  border-radius: 6px;
-}
+.form-row{display:flex;gap:12px;align-items:center;margin-top:12px}
+.form-row input, .form-row select{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.02);background:rgba(255,255,255,0.02);color:var(--accent);outline:none}
+.withdraw-block .muted{margin-top:8px}
 
-/* Mining animation */
-.miner {
-  margin-top: 30px;
-}
+.vip-grid{display:flex;gap:12px;margin-top:12px}
+.vip-card{flex:1;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);text-align:center;border:1px solid rgba(0,255,150,0.03)}
+.vip-title{font-weight:900;color:var(--accent)}
+.vip-cost{margin-top:8px;font-weight:700}
+.vip-daily{margin-top:6px;color:var(--muted)}
 
-.animation {
-  width: 100px;
-  height: 100px;
-  margin: 0 auto 20px;
-  position: relative;
-}
+.vip-form{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+.hidden{display:none}
 
-.coin {
-  width: 50px;
-  height: 50px;
-  background: gold;
-  border-radius: 50%;
-  position: absolute;
-  top: 25px;
-  left: 25px;
-  animation: spin 2s linear infinite;
-  box-shadow: 0 0 20px gold;
-}
-
-@keyframes spin {
-  0% { transform: rotateY(0deg); }
-  100% { transform: rotateY(360deg); }
-}
-
-.vip-card {
-  background: #1a2033;
-  padding: 15px;
-  border-radius: 10px;
-  margin: 15px;
-  box-shadow: 0 0 10px #000;
+/* responsive */
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr;padding:12px}
+  .sidebar{order:2;display:flex;flex-direction:row;gap:8px}
+  .coin-visual{width:160px;height:160px}
 }
